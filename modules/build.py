@@ -36,12 +36,15 @@ def main(argv):
 
         if files:
             for file in files:
-                if not file.endswith('.pyc') and not file.endswith('.pak'):
-                    filepath = path.join(root, file)
-
-                    final_files[filepath] = readfile(filepath)
-                else:
+                if file.lower().endswith(IGNORE_EXTENSIONS):
                     continue
+
+                filepath = path.join(root, file)
+
+                if file.lower().endswith(BINARY_EXTENSIONS):
+                    final_files[filepath] = readfile_bin(filepath)
+                else:
+                    final_files[filepath] = readfile(filepath)
 
         if dirs:
             for direc in dirs:
@@ -64,7 +67,11 @@ def main(argv):
     log('yellow', 'BUILD', 'resolving files:')
 
     for ffile, ffcontent in final_files.items():
-        text += '[/* FILEWRITE */]\n' + ffile + '\n' + ffcontent + '\n' + '[/* END */]\n\n'
+        if ffile.endswith(BINARY_EXTENSIONS):
+            text += '[/* FILEWRITE-BIN */]\n' + ffile + '\n' + ffcontent + '\n' + '[/* END */]\n\n'
+        else:
+            text += '[/* FILEWRITE */]\n' + ffile + '\n' + ffcontent + '\n' + '[/* END */]\n\n'
+
         log('green', 'RESOLVED', f'{str(ffile)}', True)
 
     if '--compile' in argv:

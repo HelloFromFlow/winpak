@@ -27,11 +27,14 @@ def main(argv):
     log('', 'LOG', 'successful start')
 
     if '--clean' in argv:
-        if path.exists(argv[1]) and path.isdir(argv[1]) and argv[1] != '.' and argv[1] != '..':
-            rmtree(argv[1])
-
-        log('green', '--CLEAN', 'success')
-        exit(0)
+        clean, _ = path.splitext(filename)
+        if path.exists(clean) and path.isdir(clean) and not '.' in clean and not '..' in clean:
+            rmtree(clean)
+            log('green', '--CLEAN', 'success')
+            exit(0)
+        else:
+            log('red', '--CLEAN', 'no such directory')
+            exit(1)
 
 
     commands = []
@@ -45,19 +48,39 @@ def main(argv):
 
                 log('yellow', 'DEPLOY', f'writing to file {fn}')
                 
-                with open(fn, 'w', encoding='utf-8') as file_writer:
-                    for nline in file:
-                        nlstr = nline.strip()
+                write_text = ''
 
-                        if nlstr == '[/* END */]':
-                            break
-                        else:
-                            file_writer.write(nline)
+                for nline in file:
+                    nlstr = nline.strip()
+
+                    if nlstr == '[/* END */]':
+                        break
+                    else:
+                        write_text += nline
+
+                writefile(fn, write_text)
 
                 log('green', 'DEPLOY', f'successfully wrote to file {fn}')
 
+            elif lstr == '[/* FILEWRITE-BIN */]':
+                fn = next(file).strip()
+
+                log('yellow', 'DEPLOY', f'writing to binary file {fn}')
+
+                write_text = ''
+
+                for nline in file:
+                    nlstr = nline.strip()
+
+                    if nlstr == '[/* END */]':
+                        break
+                    else:
+                        write_text += nlstr
+
+                writefile_bin(fn, write_text)
+
             elif lstr == '[/* MKDIR */]':
-                fn = next(file)
+                fn = next(file).strip()
                 makedirs(fn, exist_ok=True)
                 log('green', 'DEPLOY', f'created directory {fn}')
 
