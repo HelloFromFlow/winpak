@@ -21,9 +21,9 @@ def readfile(filepath: str) -> str: # function for reading files
     else:
         return ""
 
-def writefile(filepath: str, data: bytes) -> None: # function for writing / overwriting / creating files
+def writefile(filepath: str, text: str) -> None: # function for writing / overwriting / creating files
     with open(filepath, 'w', encoding='utf-8') as file:
-        file.write(data)
+        file.write(text)
 
 
 def log(color: str, header: str, description: str, indent: bool = False) -> None: # function for easier output during exexcution
