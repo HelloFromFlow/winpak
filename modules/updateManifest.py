@@ -1,12 +1,14 @@
-from modules.lib import log, ROOTPATH
-from os import path, listdir
+from modules.lib import log
+
+from os import path, listdir, chdir
 from json import dump
-from sys import argv as sys_argv
 
 
-def main(argv):
+def main(argv, origin):
+    chdir(origin)
+    
     if len(argv) < 2:
-        log('red', 'ERROR', 'please provide proper parameters')
+        log('red', 'ERROR', 'usage: python winpak.py -u [directory]')
         exit(1)
     else:
         if path.exists(argv[1]) and path.isdir(argv[1]):
@@ -19,8 +21,8 @@ def main(argv):
 
     res = {}
 
-    manpath = path.join(ROOTPATH, 'manifest.json')
-    repopath = path.join(ROOTPATH, argv[1])
+    manpath = 'manifest.json'
+    repopath = argv[1]
 
     if not listdir(repopath):
         log('yellow', 'WARNING', 'repository directory empty; returning')
@@ -45,7 +47,3 @@ def main(argv):
 
     with open(manpath, 'w', encoding='utf-8') as file:
         dump(res, file, indent=4, ensure_ascii=False)
-
-
-if __name__ == '__main__':
-    main(sys_argv)

@@ -3,13 +3,12 @@ import urllib.error as error
 from modules.lib import log, ROOTPATH
 
 from os import path
-from sys import argv as sys_argv
 from json import loads
 
 
-def main(argv):
+def main(argv, origin):
     if len(argv) < 2:
-        log('red', 'ERROR', 'please provide proper parameters')
+        log('red', 'ERROR', 'usage: python winpak.py -i [IP:Port]')
         exit(1)
 
     log('', 'LOG', 'successful start')
@@ -47,7 +46,7 @@ def main(argv):
 
         text = raw.decode()
 
-        with open(path.join(ROOTPATH, 'downloads', avail[pkgn]['filename']), 'w', encoding='utf-8') as file:
+        with open(path.join(origin, avail[pkgn]['filename']), 'w', encoding='utf-8') as file:
             file.write(text)
 
         
@@ -55,6 +54,3 @@ def main(argv):
         log('red', 'ERROR', f'returned status code {e}')
     except error.URLError as e:
         log('red', 'ERROR', f'failed to reach server; {e.reason}')
-
-if __name__ == '__main__':
-    main(sys_argv)

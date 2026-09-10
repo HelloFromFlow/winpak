@@ -1,8 +1,8 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from sys import argv as sys_argv
+from modules.lib import log
+
 from json import dumps, load
-from os import path, chdir, listdir
-from modules.lib import log, ROOTPATH
+from os import path, chdir
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -21,7 +21,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'application/json')
             self.end_headers()
 
-            with open(path.join(ROOTPATH, 'manifest.json'), 'r', encoding='utf-8') as manifest:
+            with open(path.join('..', 'manifest.json'), 'r', encoding='utf-8') as manifest:
                 json_resp = load(manifest)
 
             self.wfile.write(bytes(dumps(json_resp), 'utf-8'))
@@ -45,10 +45,11 @@ class Handler(BaseHTTPRequestHandler):
                 self.wfile.write(bytes(f'File Not Found: {fn}', 'utf-8'))
 
 
-def main(argv):
+def main(argv, origin):
+    chdir(origin)
 
     if len(argv) < 3:
-        log('red', 'ERROR', 'please provide proper parameters')
+        log('red', 'ERROR', 'usage: python winpak.py -s [directory to host] [IP:PORT]')
         exit(1)
     else:
         if path.exists(argv[1]) and path.isdir(argv[1]):
@@ -89,6 +90,3 @@ def main(argv):
         log('', 'LOG', 'HTTP logs end')
         log('green', 'SERVER', 'closing server')
         server.server_close()
-
-if __name__ == '__main__':
-    main(sys_argv)

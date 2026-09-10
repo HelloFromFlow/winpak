@@ -1,14 +1,14 @@
-from sys import argv as sys_argv
-from os import walk
-from time import perf_counter as time
-
 from modules.lib import *
 
+from os import walk, chdir
+from time import perf_counter as time
 
-def main(argv):
+
+def main(argv, origin):
+    chdir(origin)
 
     if len(argv) < 2:
-        log('red', 'ERROR', 'please provide a proper directory name')
+        log('red', 'ERROR', 'usage: python winpak.py -b [directory]')
         exit(1)
     else:
         if path.exists(argv[1]) and path.isdir(argv[1]):
@@ -98,6 +98,3 @@ def main(argv):
     end = time()
 
     log('', 'LOG', f'took {end - start}')
-
-if __name__ == "__main__":
-    main(sys_argv)

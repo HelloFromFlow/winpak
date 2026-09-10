@@ -1,6 +1,8 @@
 from sys import argv as sys_argv
 from pathlib import Path
-from os import chdir
+from os import chdir, getcwd
+
+org = getcwd()
 
 chdir(Path(__file__).resolve().parent)
 
@@ -12,7 +14,6 @@ import modules.server as server
 import modules.install as install
 import modules.updateManifest as updMan
 
-
 flag_map = {
     '-d': deploy.main,
     '-b': build.main,
@@ -21,8 +22,8 @@ flag_map = {
     '-u': updMan.main
 }
 
-if len(sys_argv) < 3:
-    log('red', 'ERROR', 'usage: python winpak.py [flag] [file/dir-name]')
+if len(sys_argv) < 2:
+    log('red', 'ERROR', 'usage: python winpak.py [flag] ...')
     exit(1)
 
 if sys_argv[1] not in flag_map:
@@ -31,4 +32,5 @@ if sys_argv[1] not in flag_map:
 
 flag = sys_argv.pop(1)
 
-flag_map[flag](sys_argv)
+
+flag_map[flag](sys_argv, org)
