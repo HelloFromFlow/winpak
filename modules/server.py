@@ -1,4 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from shutil import copyfileobj
 from modules.lib import log
 
 from json import dumps, load
@@ -29,13 +30,17 @@ class Handler(BaseHTTPRequestHandler):
         elif self.path.startswith('/packages/'):
             fn = self.path[10:]
 
-            if path.exists(fn) and path.isfile(fn):
+            if path.exists(fn) and path.isfile(fn) and not '..' in fn and not '/' in fn:
                 self.send_response(200)
                 self.send_header('Content-type', 'text/plain')
                 self.end_headers()
 
-                with open(fn, 'r', encoding='utf-8') as file:
-                    self.wfile.write(bytes(file.read(), 'utf-8'))
+                with open(fn, 'rb') as file:
+                    while True:
+                        read = file.read(1048576)
+                        if not read:
+                            break
+                        self.wfile.write(read)
 
             else:
                 self.send_response(404)

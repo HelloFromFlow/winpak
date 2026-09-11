@@ -1,9 +1,10 @@
 import urllib.request as request
 import urllib.error as error
-from modules.lib import log, ROOTPATH
+from modules.lib import log
 
 from os import path
 from json import loads
+from shutil import copyfileobj
 
 
 def main(argv, origin):
@@ -42,12 +43,8 @@ def main(argv, origin):
             exit(1)
 
         with request.urlopen(addr + f'/packages/{avail[pkgn]['filename']}') as content:
-            raw: bytes = content.read()
-
-        text = raw.decode()
-
-        with open(path.join(origin, avail[pkgn]['filename']), 'w', encoding='utf-8') as file:
-            file.write(text)
+            with open(path.join(origin, avail[pkgn]['filename']), 'wb') as file:
+                copyfileobj(content, file)
 
         
     except error.HTTPError as e:

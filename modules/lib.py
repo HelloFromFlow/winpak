@@ -10,8 +10,6 @@ COLORS = {
     'green': '\033[32m',
 } # color constant for the log function
 
-ROOTPATH = Path(__file__).resolve().parent.parent
-
 BINARY_EXTENSIONS = ('.exe', '.dll', '.png', '.ico', '.jpg', '.jpeg', '.webp', '.bin', '.mp3', '.wav', '.ogg', '.mp4')
 IGNORE_EXTENSIONS = ('.pyc', '.pak')
 
@@ -33,7 +31,7 @@ def readfile_bin(filepath: str) -> str: # function for reading files in binary m
     with open(filepath, 'rb') as file:
         return b64encode(file.read()).decode()
 
-def writefile_bin(filepath: str, data: str) -> None:
+def writefile_bin(filepath: str, data: str) -> None: # function for writing files in binary mode
     with open(filepath, 'wb') as file:
         file.write(b64decode(data))
 
