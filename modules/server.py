@@ -33,7 +33,7 @@ class Handler(BaseHTTPRequestHandler):
         elif self.path.startswith('/packages/'):
             fn = self.path[10:]
 
-            if not fn.endswith('.pak') or '/' in fn or '..' in fn:
+            if not fn.endswith('.pak') or '/' in fn or '\\' in fn or '..' in fn:
                 self.send_response(403)
                 self.send_header('Content-type', 'text/plain')
                 self.end_headers()
