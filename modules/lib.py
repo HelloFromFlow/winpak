@@ -14,22 +14,25 @@ BINARY_EXTENSIONS = ('.exe', '.dll', '.png', '.ico', '.jpg', '.jpeg', '.webp', '
 IGNORE_EXTENSIONS = ('.pyc', '.pak')
 
 def readfile(filepath: str) -> str: # function for reading files
-    if path.exists(filepath):
+    if path.exists(filepath) and path.isfile(filepath):
         try:
             with open(filepath, 'r', encoding='utf-8') as file:
                 return file.read()
-        except Exception:
-            return ""
+        except:
+            return ''
     else:
-        return ""
+        return ''
+
+def readfile_bin(filepath: str) -> str: # function for reading files in binary mode
+    if path.exists(filepath) and path.isfile(filepath):
+        with open(filepath, 'rb') as file:
+            return b64encode(file.read()).decode()
+    else:
+        return ''
 
 def writefile(filepath: str, text: str) -> None: # function for writing / overwriting / creating files
     with open(filepath, 'w', encoding='utf-8') as file:
         file.write(text)
-
-def readfile_bin(filepath: str) -> str: # function for reading files in binary mode
-    with open(filepath, 'rb') as file:
-        return b64encode(file.read()).decode()
 
 def writefile_bin(filepath: str, data: str) -> None: # function for writing files in binary mode
     with open(filepath, 'wb') as file:

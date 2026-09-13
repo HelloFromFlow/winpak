@@ -76,7 +76,6 @@ def main(argv, origin):
 
     if '--compile' in argv:
         for ffile in final_files.keys():
-            ffile: str
             if ffile.endswith('.c'):
                 cmds += f'gcc {ffile} -o {ffile[:-2]}\n'
                 log('green', 'ADDED', f'compiler instruction for {ffile}')

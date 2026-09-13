@@ -22,32 +22,42 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'application/json')
             self.end_headers()
 
-            with open(path.join('..', 'manifest.json'), 'r', encoding='utf-8') as manifest:
-                json_resp = load(manifest)
+            try:
+                with open(path.join('..', 'manifest.json'), 'r', encoding='utf-8') as manifest:
+                    json_resp = load(manifest)
 
-            self.wfile.write(bytes(dumps(json_resp), 'utf-8'))
+                self.wfile.write(bytes(dumps(json_resp), 'utf-8'))
+            except:
+                self.wfile.write(bytes('{}', 'utf-8'))
 
         elif self.path.startswith('/packages/'):
             fn = self.path[10:]
 
-            if path.exists(fn) and path.isfile(fn) and not '..' in fn and not '/' in fn:
-                self.send_response(200)
+            if not fn.endswith('.pak') or '/' in fn or '..' in fn:
+                self.send_response(403)
                 self.send_header('Content-type', 'text/plain')
                 self.end_headers()
 
-                with open(fn, 'rb') as file:
-                    while True:
-                        read = file.read(1048576)
-                        if not read:
-                            break
-                        self.wfile.write(read)
-
+                self.wfile.write(bytes('Forbidden', 'utf-8'))
             else:
-                self.send_response(404)
-                self.send_header('Content-type', 'text/plain')
-                self.end_headers()
+                if path.exists(fn) and path.isfile(fn):
+                    self.send_response(200)
+                    self.send_header('Content-type', 'text/plain')
+                    self.end_headers()
 
-                self.wfile.write(bytes(f'File Not Found: {fn}', 'utf-8'))
+                    with open(fn, 'rb') as file:
+                        while True:
+                            read = file.read(1048576)
+                            if not read:
+                                break
+                            self.wfile.write(read)
+
+                else:
+                    self.send_response(404)
+                    self.send_header('Content-type', 'text/plain')
+                    self.end_headers()
+
+                    self.wfile.write(bytes(f'File Not Found: {fn}', 'utf-8'))
 
 
 def main(argv, origin):
@@ -67,18 +77,7 @@ def main(argv, origin):
 
     chdir(argv[1])
 
-    ip = ''
-    port = ''
-    write_ip = True
-
-    for i in argv[2]:
-        if write_ip:
-            if i != ':':
-                ip += i
-            else:
-                write_ip = False
-        else:
-            port += i
+    ip, port = argv[2].split(':')
 
     port = int(port)
 
