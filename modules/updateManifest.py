@@ -21,11 +21,11 @@ def main(argv, origin):
 
     res = {}
 
-    with open(path.join(manpath), 'r', encoding='utf-8') as man:
-        res = load(man)
-
     manpath = 'manifest.json'
     repopath = argv[0]
+    
+    with open(path.join(manpath), 'r', encoding='utf-8') as man:
+        res = load(man)
 
     if not listdir(repopath):
         log('yellow', 'WARNING', 'repository directory empty; returning')

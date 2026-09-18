@@ -9,7 +9,6 @@ COLORS = {
     'green': '\033[32m',
 } # color constant for the log function
 
-BINARY_EXTENSIONS = ('.exe', '.dll', '.png', '.ico', '.jpg', '.jpeg', '.webp', '.bin', '.mp3', '.wav', '.ogg', '.mp4') # binary formats for build.py
 IGNORE_EXTENSIONS = ('.pyc') # formats to ignore for build.py
 
 def readfile(filepath: str) -> str: # function for reading files in binary mode
