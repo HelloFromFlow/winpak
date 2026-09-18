@@ -23,7 +23,7 @@ def main(argv, origin):
 
     manpath = 'manifest.json'
     repopath = argv[0]
-    
+
     with open(path.join(manpath), 'r', encoding='utf-8') as man:
         res = load(man)
 
@@ -34,7 +34,7 @@ def main(argv, origin):
     log('', 'LOG', 'resolving files for the manifest')
 
     for i in listdir(repopath):
-        if path.exists(i):
+        if path.exists(path.join(repopath, i)):
             if not path.isfile(path.join(repopath, i)):
                 log('yellow', 'SKIPPED', f' {i}: is a directory', True)
                 continue

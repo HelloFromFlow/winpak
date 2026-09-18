@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from shutil import copyfileobj
 from modules.lib import log
 
-from json import dumps, load
+from json import dumps, load, JSONDecodeError
 from os import path, chdir
 
 
@@ -27,7 +27,8 @@ class Handler(BaseHTTPRequestHandler):
                     json_resp = load(manifest)
 
                 self.wfile.write(bytes(dumps(json_resp), 'utf-8'))
-            except:
+            except JSONDecodeError as JSONDE:
+                print(JSONDE, '; responding with an empty dict')
                 self.wfile.write(bytes('{}', 'utf-8'))
 
         elif self.path.startswith('/packages/'):
