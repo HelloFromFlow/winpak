@@ -1,17 +1,17 @@
 from modules.lib import log
 
 from os import path, listdir, chdir
-from json import dump
+from json import dump, load
 
 
 def main(argv, origin):
     chdir(origin)
     
-    if len(argv) < 2:
-        log('red', 'ERROR', 'usage: python winpak.py -u [directory]')
+    if len(argv) < 1:
+        log('red', 'ERROR', 'usage: python winpak.py updMan [directory]')
         exit(1)
     else:
-        if path.exists(argv[1]) and path.isdir(argv[1]):
+        if path.exists(argv[0]) and path.isdir(argv[0]):
             pass
         else:
             log('red', 'ERROR', "no such path / path isn't a directory")
@@ -21,8 +21,11 @@ def main(argv, origin):
 
     res = {}
 
+    with open(path.join(manpath), 'r', encoding='utf-8') as man:
+        res = load(man)
+
     manpath = 'manifest.json'
-    repopath = argv[1]
+    repopath = argv[0]
 
     if not listdir(repopath):
         log('yellow', 'WARNING', 'repository directory empty; returning')
@@ -31,19 +34,21 @@ def main(argv, origin):
     log('', 'LOG', 'resolving files for the manifest')
 
     for i in listdir(repopath):
-        if not path.isfile(path.join(repopath, i)):
-            log('yellow', 'SKIPPED', f' {i}: is a directory', True)
-            continue
+        if path.exists(i):
+            if not path.isfile(path.join(repopath, i)):
+                log('yellow', 'SKIPPED', f' {i}: is a directory', True)
+                continue
 
-        pkg = i[:i.rfind('.')]
+            pkg = i[:i.rfind('.')]
 
-        res[pkg] = {
-            'filename': i,
-            'description': 'TBA',
-            'version': 'TBA'
-        }
+            if not pkg in res.keys():
+                res[pkg] = {
+                    'filename': i,
+                    'description': 'TBA',
+                    'version': 'TBA'
+                }
 
-        log('green', 'RESOLVED', pkg, True)
+            log('green', 'RESOLVED', pkg, True)
 
     with open(manpath, 'w', encoding='utf-8') as file:
         dump(res, file, indent=4, ensure_ascii=False)

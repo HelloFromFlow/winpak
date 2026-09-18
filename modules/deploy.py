@@ -9,15 +9,15 @@ from time import perf_counter as time
 def main(argv, origin):
     chdir(origin)
 
-    if len(argv) < 2:
-        log('red', 'ERROR', 'usage: python winpak.py -d [filename]')
+    if len(argv) < 1:
+        log('red', 'ERROR', 'usage: python winpak.py deploy [filename]')
         exit(1)
     else:
-        if path.exists(argv[1]) and path.isfile(argv[1]):
-            filename = argv[1]
+        if path.exists(argv[0]) and path.isfile(argv[0]):
+            filename = argv[0]
         else:
-            if path.exists(argv[1] + '.pak') and path.isfile(argv[1] + '.pak'):
-                filename = argv[1] + '.pak'
+            if path.exists(argv[0] + '.pak') and path.isfile(argv[0] + '.pak'):
+                filename = argv[0] + '.pak'
             else:
                 log('red', 'ERROR', 'no such path / path is a directory')
                 exit(1)
@@ -48,25 +48,6 @@ def main(argv, origin):
                 fn = next(file).strip()
 
                 log('yellow', 'DEPLOY', f'writing to file {fn}')
-                
-                write_text = ''
-
-                for nline in file:
-                    nlstr = nline.strip()
-
-                    if nlstr == '[/* END */]':
-                        break
-                    else:
-                        write_text += nline
-
-                writefile(fn, write_text)
-
-                log('green', 'DEPLOY', f'successfully wrote to file {fn}')
-
-            elif lstr == '[/* FILEWRITE-BIN */]':
-                fn = next(file).strip()
-
-                log('yellow', 'DEPLOY', f'writing to binary file {fn}')
 
                 write_text = ''
 
@@ -78,12 +59,7 @@ def main(argv, origin):
                     else:
                         write_text += nlstr
 
-                writefile_bin(fn, write_text)
-
-            elif lstr == '[/* MKDIR */]':
-                fn = next(file).strip()
-                makedirs(fn, exist_ok=True)
-                log('green', 'DEPLOY', f'created directory {fn}')
+                writefile(fn, write_text)
 
             elif lstr == '[/* MKDIRS */]':
                 for nline in file:

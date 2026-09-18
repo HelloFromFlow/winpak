@@ -63,21 +63,21 @@ class Handler(BaseHTTPRequestHandler):
 def main(argv, origin):
     chdir(origin)
 
-    if len(argv) < 3:
-        log('red', 'ERROR', 'usage: python winpak.py -s [directory to host] [IP:PORT]')
+    if len(argv) < 2:
+        log('red', 'ERROR', 'usage: python winpak.py host [IP:PORT] [dir to host]')
         exit(1)
     else:
-        if path.exists(argv[1]) and path.isdir(argv[1]):
+        if path.exists(argv[1]) and path.isdir(argv[1]) and path.exists('manifest.json'):
             pass
         else:
-            log('red', 'ERROR', "no such path / path isn't a directory")
+            log('red', 'ERROR', "no such path / path isn't a directory / no manifest.json file in parent directory")
             exit(1)
 
     log('', 'LOG', 'successful start')
 
     chdir(argv[1])
 
-    ip, port = argv[2].split(':')
+    ip, port = argv[0].split(':')
 
     port = int(port)
 

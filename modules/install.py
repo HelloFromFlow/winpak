@@ -1,6 +1,7 @@
 import urllib.request as request
 import urllib.error as error
 from modules.lib import log
+import modules.deploy as deploy
 
 from os import path
 from json import loads
@@ -9,15 +10,14 @@ from shutil import copyfileobj
 
 def main(argv, origin):
     if len(argv) < 2:
-        log('red', 'ERROR', 'usage: python winpak.py -i [IP:Port]')
+        log('red', 'ERROR', 'usage: python winpak.py install [IP:Port] [package name]')
         exit(1)
 
     log('', 'LOG', 'successful start')
 
-    addr = f'http://{argv[1]}'
-
+    addr = f'http://{argv[0]}'
     manifest = addr + '/getManifest'
-
+    pkgn = argv[1]
 
     try:
         with request.urlopen(manifest) as response:
@@ -31,21 +31,24 @@ def main(argv, origin):
 
         log('green', 'INSTALLATION', 'fetched available packages')
 
-        print('Available packages:')
-
-        for i, j in avail.items():
-            print(f"\t{i} ({j['version']}); {j['description']}")
-
-        pkgn = input('\nEnter package name: ')
-
         if not avail.get(pkgn):
             log('red', 'ERROR', f'invalid package name: {pkgn}')
             exit(1)
+
+        log('green', 'INSTALLATION', f'package {pkgn}:')
+
+        log('', 'DESCRIPTION', avail[pkgn]['description'])
+        log('', 'VERSION', avail[pkgn]['version'])
+
+        log('yellow', 'INSTALLATION', 'downloading...')
 
         with request.urlopen(addr + f'/packages/{avail[pkgn]['filename']}') as content:
             with open(path.join(origin, avail[pkgn]['filename']), 'wb') as file:
                 copyfileobj(content, file)
 
+        log('yellow', 'INSTALLATION', 'deploying...')
+
+        deploy.main([avail[pkgn]['filename']], origin)
         
     except error.HTTPError as e:
         log('red', 'ERROR', f'returned status code {e}')

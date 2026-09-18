@@ -10,16 +10,16 @@ import modules.deploy as deploy
 import modules.build as build
 from modules.lib import log
 
-import modules.server as server
+import modules.host as host
 import modules.install as install
 import modules.updateManifest as updMan
 
 flag_map = {
-    '-d': deploy.main,
-    '-b': build.main,
-    '-s': server.main,
-    '-i': install.main,
-    '-u': updMan.main
+    'deploy': deploy.main,
+    'build': build.main,
+    'host': host.main,
+    'install': install.main,
+    'updMan': updMan.main
 }
 
 if len(sys_argv) < 2:
@@ -32,5 +32,6 @@ if sys_argv[1] not in flag_map:
 
 flag = sys_argv.pop(1)
 
+sys_argv = sys_argv[1:]
 
 flag_map[flag](sys_argv, org)

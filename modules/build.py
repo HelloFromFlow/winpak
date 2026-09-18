@@ -7,11 +7,11 @@ from time import perf_counter as time
 def main(argv, origin):
     chdir(origin)
 
-    if len(argv) < 2:
-        log('red', 'ERROR', 'usage: python winpak.py -b [directory]')
+    if len(argv) < 1:
+        log('red', 'ERROR', 'usage: python winpak.py build [directory]')
         exit(1)
     else:
-        if path.exists(argv[1]) and path.isdir(argv[1]):
+        if path.exists(argv[0]) and path.isdir(argv[0]):
             pass
         else:
             log('red', 'ERROR', "no such path / path isn't a directory")
@@ -22,7 +22,7 @@ def main(argv, origin):
     log('', 'LOG', 'successful start')
 
 
-    target = argv[1]
+    target = argv[0]
     main = target + '.pak'
     text = ''
     cmds = ''
@@ -41,10 +41,7 @@ def main(argv, origin):
 
                 filepath = path.join(root, file)
 
-                if file.lower().endswith(BINARY_EXTENSIONS):
-                    final_files[filepath] = readfile_bin(filepath)
-                else:
-                    final_files[filepath] = readfile(filepath)
+                final_files[filepath] = readfile(filepath)
 
         if dirs:
             for direc in dirs:
@@ -67,11 +64,7 @@ def main(argv, origin):
     log('yellow', 'BUILD', 'resolving files:')
 
     for ffile, ffcontent in final_files.items():
-        if ffile.endswith(BINARY_EXTENSIONS):
-            text += '[/* FILEWRITE-BIN */]\n' + ffile + '\n' + ffcontent + '\n' + '[/* END */]\n\n'
-        else:
-            text += '[/* FILEWRITE */]\n' + ffile + '\n' + ffcontent + '\n' + '[/* END */]\n\n'
-
+        text += '[/* FILEWRITE */]\n' + ffile + '\n' + ffcontent + '\n' + '[/* END */]\n\n'
         log('green', 'RESOLVED', f'{str(ffile)}', True)
 
     if '--compile' in argv:
