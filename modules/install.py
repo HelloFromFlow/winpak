@@ -45,10 +45,6 @@ def main(argv, origin):
         with request.urlopen(addr + f'/packages/{avail[pkgn]['filename']}') as content:
             with open(path.join(origin, avail[pkgn]['filename']), 'wb') as file:
                 copyfileobj(content, file)
-
-        log('yellow', 'INSTALLATION', 'deploying...')
-
-        deploy.main([avail[pkgn]['filename']], origin)
         
     except error.HTTPError as e:
         log('red', 'ERROR', f'returned status code {e}')
