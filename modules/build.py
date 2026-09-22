@@ -83,7 +83,7 @@ def main(argv, origin):
 
     log('green', 'ADDED', 'added clean instructions')
 
-    writefile(main, text)
+    writefile_plain(main, text)
 
     log('green', 'LOG', f'successfully wrote to {main}')
 

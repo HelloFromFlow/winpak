@@ -22,6 +22,10 @@ def writefile(filepath: str, data: str) -> None: # function for writing files in
     with open(filepath, 'wb') as file:
         file.write(b64decode(data))
 
+def writefile_plain(filepath: str, text: str) -> None:
+    with open(filepath, 'w', encoding='utf-8') as file:
+        file.write(text)
+
 
 def log(color: str, header: str, description: str, indent: bool = False) -> None: # function for easier output during exexcution
     global COLORS
