@@ -67,15 +67,6 @@ def main(argv, origin):
         text += '[/* FILEWRITE */]\n' + ffile + '\n' + ffcontent + '\n' + '[/* END */]\n\n'
         log('green', 'RESOLVED', f'{str(ffile)}', True)
 
-    if '--compile' in argv:
-        for ffile in final_files.keys():
-            if ffile.endswith('.c'):
-                cmds += f'gcc {ffile} -o {ffile[:-2]}\n'
-                log('green', 'ADDED', f'compiler instruction for {ffile}')
-            elif ffile.endswith('.cpp'):
-                cmds += f'g++ {ffile} -o {ffile [:-4]}\n'
-                log('green', 'ADDED', f'compiler instruction for {ffile}')
-
     if cmds:
         text += '[/* TERMINAL-COMMANDS */]\n' + cmds + '[/* END */]\n\n'
 

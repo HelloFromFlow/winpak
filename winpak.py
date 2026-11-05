@@ -8,6 +8,7 @@ chdir(Path(__file__).resolve().parent)
 
 import modules.deploy as deploy
 import modules.build as build
+import modules.inspect as inspect
 from modules.lib import log
 
 import modules.host as host
@@ -19,7 +20,8 @@ flag_map = {
     'build': build.main,
     'host': host.main,
     'install': install.main,
-    'updMan': updMan.main
+    'updMan': updMan.main,
+    'inspect': inspect.main
 }
 
 if len(sys_argv) < 2:

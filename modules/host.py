@@ -1,5 +1,4 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from shutil import copyfileobj
 from modules.lib import log
 
 from json import dumps, load, JSONDecodeError
